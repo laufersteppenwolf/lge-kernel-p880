@@ -131,6 +131,28 @@ void blk_set_default_limits(struct queue_limits *lim)
 EXPORT_SYMBOL(blk_set_default_limits);
 
 /**
+ * blk_set_stacking_limits - set default limits for stacking devices
+ * @lim:  the queue_limits structure to reset
+ *
+ * Description:
+ *   Returns a queue_limit struct to its default state. Should be used
+ *   by stacking drivers like DM that have no internal limits.
+ */
+void blk_set_stacking_limits(struct queue_limits *lim)
+{
+	blk_set_default_limits(lim);
+
+	/* Inherit limits from component devices */
+	lim->discard_zeroes_data = 1;
+	lim->max_segments = USHRT_MAX;
+	lim->max_hw_sectors = UINT_MAX;
+	lim->max_segment_size = UINT_MAX;
+
+	lim->max_sectors = BLK_DEF_MAX_SECTORS;
+}
+EXPORT_SYMBOL(blk_set_stacking_limits);
+
+/**
  * blk_queue_make_request - define an alternate make_request function for a device
  * @q:  the request queue for the device to be affected
  * @mfn: the alternate make_request function
