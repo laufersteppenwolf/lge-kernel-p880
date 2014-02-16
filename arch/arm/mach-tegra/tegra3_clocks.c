@@ -3668,6 +3668,14 @@ static struct clk tegra_pll_u = {
 };
 
 static struct clk_pll_freq_table tegra_pll_x_freq_table[] = {
+	
+	/* 1.8 GHz */
+	{ 12000000, 1800000000, 900,  6,  1, 8},
+	{ 13000000, 1800000000, 969,  7,  1, 8},
+	{ 16800000, 1800000000, 750,  7,  1, 8},
+	{ 19200000, 1800000000, 750,  8,  1, 8},
+	{ 26000000, 1800000000, 850,  9,  1, 8},	
+	
 	/* 1.7 GHz */
 	{ 12000000, 1700000000, 850,  6,  1, 8},
 	{ 13000000, 1700000000, 915,  7,  1, 8},	/* actual: 1699.2 MHz */
@@ -3733,14 +3741,14 @@ static struct clk tegra_pll_x = {
 	.ops       = &tegra_pll_ops,
 	.reg       = 0xe0,
 	.parent    = &tegra_pll_ref,
-	.max_rate  = 1700000000,
+	.max_rate  = 1800000000,
 	.u.pll = {
 		.input_min = 2000000,
 		.input_max = 31000000,
 		.cf_min    = 1000000,
 		.cf_max    = 6000000,
 		.vco_min   = 20000000,
-		.vco_max   = 1700000000,
+		.vco_max   = 1800000000,
 		.freq_table = tegra_pll_x_freq_table,
 		.lock_delay = 300,
 	},
@@ -4018,7 +4026,7 @@ static struct clk tegra_clk_cclk_g = {
 	.inputs	= mux_cclk_g,
 	.reg	= 0x368,
 	.ops	= &tegra_super_ops,
-	.max_rate = 1700000000,
+	.max_rate = 1800000000,
 };
 
 static struct clk tegra_clk_cclk_lp = {
@@ -4048,7 +4056,7 @@ static struct clk tegra_clk_virtual_cpu_g = {
 	.name      = "cpu_g",
 	.parent    = &tegra_clk_cclk_g,
 	.ops       = &tegra_cpu_ops,
-	.max_rate  = 1700000000,
+	.max_rate  = 1800000000,
 	.u.cpu = {
 		.main      = &tegra_pll_x,
 		.backup    = &tegra_pll_p,
@@ -4078,7 +4086,7 @@ static struct clk tegra_clk_cpu_cmplx = {
 	.name      = "cpu",
 	.inputs    = mux_cpu_cmplx,
 	.ops       = &tegra_cpu_cmplx_ops,
-	.max_rate  = 1700000000,
+	.max_rate  = 1800000000,
 };
 
 static struct clk tegra_clk_cop = {
@@ -4916,7 +4924,8 @@ static struct cpufreq_frequency_table freq_table_1p7GHz[] = {
 	{15, 1500000 },
 	{16, 1600000 },
 	{17, 1700000 },
-	{18, CPUFREQ_TABLE_END },
+	{18, 1800000 },
+	{19, CPUFREQ_TABLE_END },
 };
 
 static struct tegra_cpufreq_table_data cpufreq_tables[] = {
@@ -4925,7 +4934,7 @@ static struct tegra_cpufreq_table_data cpufreq_tables[] = {
 	{ freq_table_1p3GHz, 2, 15 },
 	{ freq_table_1p4GHz, 2, 16 },
 	{ freq_table_1p5GHz, 2, 17 },
-	{ freq_table_1p7GHz, 2, 19 },
+	{ freq_table_1p7GHz, 2, 20 },
 };
 
 
