@@ -81,7 +81,7 @@
  */
 
 /* FIXME: remove and never ignore overclock */
-#define IGNORE_PARENT_OVERCLOCK 0
+#define IGNORE_PARENT_OVERCLOCK 1
 
 static DEFINE_MUTEX(clock_list_lock);
 static LIST_HEAD(clocks);

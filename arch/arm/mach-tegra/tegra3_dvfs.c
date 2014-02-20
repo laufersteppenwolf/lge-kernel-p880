@@ -368,7 +368,7 @@ static struct dvfs core_dvfs_table[] = {
 	CORE_DVFS("cbus", core_millivolts, 3, 1, KHZ,        1,      1,      1,      1,      1,       1,  484000,  484000,  484000),
 #endif
 
-	CORE_DVFS("pll_c", core_millivolts, -1, 1, KHZ,  533000, 667000, 667000, 800000, 800000, 1066000, 1066000, 1066000, 1200000),
+	CORE_DVFS("pll_c", core_millivolts, -1, 1, KHZ,  533000, 667000, 667000, 800000, 800000, 1066000, 1066000, 1300000, 1300000),
 
 	/*
 	 * PLLM dvfs is common across all speedo IDs with one special exception
@@ -376,12 +376,12 @@ static struct dvfs core_dvfs_table[] = {
 	 * common and restricted table are included, and table selection is
 	 * handled by is_pllm_dvfs() below.
 	 */
-	CORE_DVFS("pll_m", core_millivolts, -1, 1, KHZ,  533000, 667000, 667000, 800000, 800000, 1066000, 1066000, 1066000, 1066000),
+	CORE_DVFS("pll_m", core_millivolts, -1, 1, KHZ,  533000, 667000, 667000, 800000, 800000, 1066000, 1066000, 1300000, 1300000),
 #ifdef CONFIG_TEGRA_PLLM_RESTRICTED
 #ifdef CONFIG_MACH_X3
-	CORE_DVFS("pll_m", core_millivolts, 2, 1, KHZ,  533000, 800000, 800000, 800000, 800000, 1066000, 1066000, 1066000, 1066000),
+	CORE_DVFS("pll_m", core_millivolts, 2, 1, KHZ,  533000, 800000, 800000, 800000, 800000, 1066000, 1066000, 1300000, 1300000),
 #else
-	CORE_DVFS("pll_m", core_millivolts, 2, 1, KHZ,  533000, 900000, 900000, 900000, 900000, 1066000, 1066000, 1066000, 1066000),
+	CORE_DVFS("pll_m", core_millivolts, 2, 1, KHZ,  533000, 900000, 900000, 900000, 900000, 1066000, 1066000, 1300000, 1300000),
 #endif
 #endif
 	/* Core voltages (mV):		    950,   1000,   1050,   1100,   1150,   1200,    1250,     1300,    1350 */
@@ -430,13 +430,13 @@ static struct dvfs core_dvfs_table[] = {
 
 	CORE_DVFS("tvo", core_millivolts, -1, 1, KHZ,        1,      1, 297000, 297000, 297000, 297000,  297000,   297000,  297000),
 	CORE_DVFS("cve", core_millivolts, -1, 1, KHZ,        1,      1, 297000, 297000, 297000, 297000,  297000,   297000,  297000),
-#ifdef CONFIG_MACH_X3
-	CORE_DVFS("dsia", core_millivolts, -1, 1, KHZ,    432500, 275000, 275000, 275000, 275000, 275000,  275000,   275000,  275000),
-	CORE_DVFS("dsib", core_millivolts, -1, 1, KHZ,    432500, 275000, 275000, 275000, 275000, 275000,  275000,   275000,  275000),
-#else
+//#ifdef CONFIG_MACH_X3
+//	CORE_DVFS("dsia", core_millivolts, -1, 1, KHZ,    432500, 275000, 275000, 275000, 275000, 275000,  275000,   275000,  275000),
+//	CORE_DVFS("dsib", core_millivolts, -1, 1, KHZ,    432500, 275000, 275000, 275000, 275000, 275000,  275000,   275000,  275000),
+//#else
 	CORE_DVFS("dsia", core_millivolts, -1, 1, KHZ,   432500, 432500, 432500, 432500, 432500, 432500,  432500,   432500,  432500),
 	CORE_DVFS("dsib", core_millivolts, -1, 1, KHZ,   432500, 432500, 432500, 432500, 432500, 432500,  432500,   432500,  432500),
-#endif
+//#endif
 
 	/*
 	 * The clock rate for the display controllers that determines the
