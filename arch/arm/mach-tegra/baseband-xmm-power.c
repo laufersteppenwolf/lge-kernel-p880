@@ -1130,9 +1130,6 @@ static int xmm_power_driver_resume(struct device *dev)
 			pr_err("%s: disable_irq_wake error=%d\n",
 				__func__, err);
 	}
-	/* PMC is driving hsic bus
-	 * tegra_baseband_rail_on();
-	 */
 	reenable_autosuspend = true;
 
 	return 0;
