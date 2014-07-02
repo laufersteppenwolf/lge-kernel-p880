@@ -44,7 +44,7 @@ echo ''
 cd ~/smb/kernel/out/
 . pack_cwm.sh
 if [[ $1 = -d ]]; then
-cp $zipname ~/Dropbox/Android/kernel/$zipname
+cp "$zipname" ~/Dropbox/Android/kernel/"$zipname"
 echo "Copying $zipname to Dropbox"
 fi
 cd $local_dir
