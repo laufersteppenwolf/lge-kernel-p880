@@ -921,10 +921,12 @@ static ssize_t fuse_show(struct kobject *kobj, struct kobj_attribute *attr, char
 		return -EINVAL;
 	}
 
+#if 0
 	if ((param == SBK) && fuse_odm_prod_mode()) {
 		pr_err("device locked. sbk read not allowed\n");
 		return 0;
 	}
+#endif
 
 	memset(data, 0, sizeof(data));
 	ret = tegra_fuse_read(param, data, fuse_info_tbl[param].sz);
