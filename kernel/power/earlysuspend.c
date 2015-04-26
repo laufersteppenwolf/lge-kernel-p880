@@ -39,7 +39,7 @@ extern TYPE_CHARGING_MODE charging_mode;
 #define LGE_EARLYSUSPEND_DEBUG  1  //[20110131:geayoung.baek] suspend,resume monitoring
 
 #define BOOST_CPU_MIN_FREQ	1000000 // 1GHz
-#define BOOST_DEBUG 0
+#define BOOST_DEBUG 1
 
 enum {
 	DEBUG_USER_STATE = 1U << 0,
@@ -68,6 +68,8 @@ static int state;
 #if LGE_EARLYSUSPEND_DEBUG
 static int lateResumeCount = 0;
 #endif
+
+bool x3_resume_boost_active = false;
 
 void register_early_suspend(struct early_suspend *handler)
 {
@@ -154,6 +156,8 @@ void x3_resume_boost_start(void)
 	unsigned long max_freq;
 	unsigned long preferred_boost_freq;
 	
+	x3_resume_boost_active = true;
+	
 	if (BOOST_DEBUG)
 		pr_info("x3_resume_boost_start: Disabling speed cap\n");
 	tegra_cpu_set_speed_cap(NULL);
@@ -184,6 +188,7 @@ void x3_resume_boost_start(void)
 
 void x3_resume_boost_stop(void)
 {
+	x3_resume_boost_active = false;
 	if (BOOST_DEBUG)
 		pr_info("x3_resume_boost_stop: Min freq is %d\n", PM_QOS_CPU_FREQ_MIN_DEFAULT_VALUE );
 	cpufreq_set_min_freq(NULL, PM_QOS_CPU_FREQ_MIN_DEFAULT_VALUE);
@@ -215,7 +220,8 @@ static void late_resume(struct work_struct *work)
 	}
 	if (debug_mask & DEBUG_SUSPEND)
 		pr_info("late_resume: call handlers\n");
-	x3_resume_boost_start();
+	if (!x3_resume_boost_active)
+			x3_resume_boost_start();
 	list_for_each_entry_reverse(pos, &early_suspend_handlers, link) {
 		if (pos->resume != NULL) {
 			if (debug_mask & DEBUG_VERBOSE)
@@ -226,7 +232,8 @@ static void late_resume(struct work_struct *work)
 	}
 	if (debug_mask & DEBUG_SUSPEND)
 		pr_info("late_resume: done\n");
-	x3_resume_boost_stop();
+	if (x3_resume_boost_active)
+		x3_resume_boost_stop();
 abort:
 	mutex_unlock(&early_suspend_lock);
 }

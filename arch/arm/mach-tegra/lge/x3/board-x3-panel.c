@@ -54,7 +54,7 @@ extern int ssd2825_bridge_disable(void);
 #define x3_hdmi_hpd	TEGRA_GPIO_PN7
 #define TRUE 1
 #define FALSE 0
-static int x3_hddisplay_on = FALSE;
+int x3_hddisplay_on = FALSE;
 static struct workqueue_struct *bridge_work_queue;
 static struct regulator *x3_hdmi_reg = NULL;
 static struct regulator *x3_hdmi_pll = NULL;

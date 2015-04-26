@@ -152,6 +152,10 @@
 #define ONOFF_STAT_LID_MASK		(1 << 0)
 #define ONOFF_IRQ_EN0_RISING		(1 << 3)
 
+extern void x3_resume_boost_start(void);
+extern int x3_hddisplay_on;
+extern bool x3_resume_boost_active;
+
 enum {
 	CACHE_IRQ_LBT,
 	CACHE_IRQ_SD,
@@ -1173,6 +1177,15 @@ static irqreturn_t max77663_irq(int irq, void *data)
 
 	printk("max77663_irq: irq_mask=0x%02x \n",irq_top);
 
+    // Do some nasty stuff here
+    if (!x3_hddisplay_on) {
+		printk("%s: Boosting CPU now!", __func__);
+        x3_resume_boost_start();
+        x3_resume_boost_active = true;
+	} else {
+		printk("%s: Skipping CPU boost!", __func__);
+	}
+	
 	if (irq_top & IRQ_TOP_GLBL_MASK) {
 		ret = max77663_do_irq(chip, MAX77663_REG_LBT_IRQ, IRQ_LBT_BASE,
 				      IRQ_LBT_END);
