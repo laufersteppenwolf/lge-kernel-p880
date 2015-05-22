@@ -35,6 +35,7 @@
 extern TYPE_CHARGING_MODE charging_mode;
 #define RESTRICTED_CLOCK	700000
 #define RESTRICTED_CORE		2
+unsigned int restricted_clock = RESTRICTED_CLOCK;
 #endif
 #define LGE_EARLYSUSPEND_DEBUG  1  //[20110131:geayoung.baek] suspend,resume monitoring
 
@@ -128,7 +129,7 @@ static void early_suspend(struct work_struct *work)
 		}
 #ifdef LGE_RESTRICT_POWER_DURING_SLEEP
 	if(charging_mode == CHARGING_NONE){
-		cpufreq_set_max_freq(NULL, RESTRICTED_CLOCK);
+		cpufreq_set_max_freq(NULL, restricted_clock);
 //		tegra_auto_hotplug_set_max_cpus(RESTRICTED_CORE);
 	}
 	else
@@ -240,6 +241,7 @@ abort:
 
 void request_suspend_state(suspend_state_t new_state)
 {
+	extern int x3_hddisplay_on;
 	unsigned long irqflags;
 	int old_sleep;
 
@@ -270,6 +272,19 @@ void request_suspend_state(suspend_state_t new_state)
 #endif
 //                        
 	}
+	/** Boost CPU now **/
+	if (new_state != PM_SUSPEND_ON) {
+		pr_info("%s: No wakeup requested --> not boosting CPU", __func__); //No wakeup --> no boost
+	} else {
+		if (!x3_hddisplay_on && !x3_resume_boost_active) {
+			printk("%s: Boosting CPU now!", __func__);
+			x3_resume_boost_start();
+			x3_resume_boost_active = true;
+		} else {
+			printk("%s: Skipping CPU boost!", __func__);
+		}
+	}
+	
 	if (!old_sleep && new_state != PM_SUSPEND_ON) {
 		state |= SUSPEND_REQUESTED;
 		queue_work(suspend_work_queue, &early_suspend_work);
@@ -313,6 +328,10 @@ void request_suspend_state(suspend_state_t new_state)
 //                        
 	requested_suspend_state = new_state;
 	spin_unlock_irqrestore(&state_lock, irqflags);
+}
+
+unsigned int get_default_restricted_clock(void) {
+	return RESTRICTED_CLOCK;
 }
 
 suspend_state_t get_suspend_state(void)

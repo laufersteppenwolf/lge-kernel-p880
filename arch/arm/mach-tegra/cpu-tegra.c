@@ -58,6 +58,8 @@ static int suspend_index;
 
 static bool force_policy_max;
 
+extern unsigned int restricted_clock;
+
 static int force_policy_max_set(const char *arg, const struct kernel_param *kp)
 {
 	int ret;
@@ -454,6 +456,36 @@ static ssize_t show_throttle(struct cpufreq_policy *policy, char *buf)
 
 cpufreq_freq_attr_ro(throttle);
 #endif /* CONFIG_TEGRA_THERMAL_THROTTLE */
+
+static ssize_t show_screen_off_max_freq(struct cpufreq_policy *policy, char *buf)
+{
+	return sprintf(buf, "%u\n", restricted_clock);
+}
+
+static ssize_t store_screen_off_max_freq(struct cpufreq_policy *policy,
+const char *buf, size_t count)
+{
+	extern unsigned int get_default_restricted_clock(void);
+	int ret;
+	unsigned int freq;
+	ret = sscanf(buf, "%u", &freq);
+	if (ret != 1)
+		return -EINVAL;
+
+	if ((freq >= 51000) && (freq <= 1700000)){
+		restricted_clock = freq;
+		pr_info("Max screen off freq is now %ukHz\n", freq);
+	}
+	else {
+		pr_info("Invalid freq requested: %ukHz. Falling back to default\n", freq);
+		restricted_clock = get_default_restricted_clock();
+		freq = get_default_restricted_clock();
+	}
+
+	return count;
+}
+
+cpufreq_freq_attr_rw(screen_off_max_freq);
 
 #ifdef CONFIG_TEGRA_EDP_LIMITS
 
@@ -1097,6 +1129,7 @@ static struct freq_attr *tegra_cpufreq_attr[] = {
 #ifdef CONFIG_TEGRA_THERMAL_THROTTLE
 	&throttle,
 #endif
+	&screen_off_max_freq,
 	NULL,
 };
 

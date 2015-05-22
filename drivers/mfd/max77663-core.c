@@ -1178,7 +1178,7 @@ static irqreturn_t max77663_irq(int irq, void *data)
 	printk("max77663_irq: irq_mask=0x%02x \n",irq_top);
 
     // Do some nasty stuff here
-    if (!x3_hddisplay_on) {
+    if (!x3_hddisplay_on && !x3_resume_boost_active) {
 		printk("%s: Boosting CPU now!", __func__);
         x3_resume_boost_start();
         x3_resume_boost_active = true;
