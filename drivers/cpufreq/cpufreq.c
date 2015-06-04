@@ -339,8 +339,17 @@ static inline void adjust_jiffies(unsigned long val, struct cpufreq_freqs *ci)
 void cpufreq_notify_transition(struct cpufreq_freqs *freqs, unsigned int state)
 {
 	struct cpufreq_policy *policy;
+	extern bool x3_resume_boost_active;
 
-	BUG_ON(irqs_disabled());
+	if (irqs_disabled()) {
+		pr_warn("Calling %s with disabled irqs!", __func__);
+		if (!x3_resume_boost_active) {
+			BUG_ON(irqs_disabled());
+		} else {
+			pr_warn("*********** FIX ME!! ****************");
+			pr_warn("%s: Skipping BUG_ON(irqs_disabled()) as x3_resume_boost is active!", __func__);
+		}
+	}
 
 	freqs->flags = cpufreq_driver->flags;
 	dprintk("notification %u of frequency transition to %u kHz\n",

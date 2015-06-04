@@ -162,7 +162,9 @@ void x3_resume_boost_start(void)
 	if (BOOST_DEBUG)
 		pr_info("x3_resume_boost_start: Disabling speed cap\n");
 	tegra_cpu_set_speed_cap(NULL);
-
+	tegra_cpu_set_speed_cap(NULL);
+	tegra_cpu_set_speed_cap(NULL);
+	
 	max_freq = cpufreq_quick_get_max(0);
 	if (BOOST_DEBUG)
 		pr_info("x3_resume_boost_start: scaling_max_freq is %lu\n", max_freq );
@@ -176,15 +178,17 @@ void x3_resume_boost_start(void)
 			preferred_boost_freq = max_freq;
 		}
 	} else {
-		preferred_boost_freq = 1000000;
+		preferred_boost_freq = max_freq;
 	}
 	if (BOOST_DEBUG)
 		pr_info("x3_resume_boost_start: preferred boost freq is: %lu", preferred_boost_freq );
 	cpufreq_set_min_freq(NULL, preferred_boost_freq); //TODO: Use proper boost method
 	
-	if (BOOST_DEBUG)
-		pr_info("x3_resume_boost_start: Min freq is %d\n", BOOST_CPU_MIN_FREQ );
-	cpufreq_set_min_freq(NULL, BOOST_CPU_MIN_FREQ);
+	if (max_freq >= BOOST_CPU_MIN_FREQ) {
+		if (BOOST_DEBUG)
+			pr_info("x3_resume_boost_start: Min freq is %d\n", BOOST_CPU_MIN_FREQ );
+		cpufreq_set_min_freq(NULL, BOOST_CPU_MIN_FREQ);
+	}
 }
 
 void x3_resume_boost_stop(void)
